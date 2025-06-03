@@ -1,68 +1,83 @@
-import tensorflow as tf
+from ultralytics import YOLO
+import torch
+import cv2
 import os
-from PIL import Image
-import matplotlib.pyplot as plt
 
+class GarbageDetector:
+    def __init__(self):
+        self.model = None
+        self.class_names = [
+            'Paper', 'Cardboard', 'Class', 'Plastic', 'Metal', 'Zip-topcan', 'Glassbottles', 'Batteries', 'Fluorescentlighttubes', 'Paintsandsolvents', 'Chemicals', 'Medications', 'Foodscraps', 'Vegetablepeels', 'Fruitpeels', 'Coffeegrounds', 'Tealeaves', 'Planttrimmings', 'SoiledPlastic', 'TornTextiles', 'Ceramics', 'Cigarettebutts', 'Wood', 'Drywall', 'Bricks', 'Concrete', 'Furniture', 'Appliance', 'Mattresses', 'Computer', 'Mobilephones', 'Televisions', 'Blood-soakedgauze', 'Needles', 'MedicalWaste', 'OldCothes', 'Bedding', 'Oldbook', 'Foodbox', 'Plasticbag'
+        ]
+    
+    def train(self, data_yaml_path):
+        """
+        训练模型
+        :param data_yaml_path: 数据配置文件路径
+        """
+        # 创建YOLO模型
+        self.model = YOLO('yolov8s.pt')  # 使用yolov8n架构创建新模型
+        
+        # 开始训练
+        results = self.model.train(
+            data=data_yaml_path,
+            epochs=30,            # 训练轮数
+            imgsz=320,            # 图片尺寸
+            batch=16,             # 批次大小
+            workers=8,            # 数据加载器的工作进程数
+            patience=50,         # 早停策略
+            device='0' if torch.cuda.is_available() else 'cpu',  # 使用GPU或CPU
+            pretrained=True,        # 使用预训练权重
+            optimizer='AdamW',      # 使用AdamW优化器
+            lr0=0.001,             # 初始学习率
+            weight_decay=0.0005     # 权重衰减
+        )
+        
+    def predict(self, image_path):
+        """
+        对单张图片进行预测
+        :param image_path: 图片路径
+        """
+        if self.model is None:
+            raise ValueError("模型未训练，请先训练模型")
+            
+        # 进行预测
+        results = self.model(image_path)
+        
+        # 读取原始图片
+        img = cv2.imread(image_path)
+        
+        # 在图片上绘制预测结果
+        for result in results:
+            boxes = result.boxes
+            for box in boxes:
+                # 获取坐标
+                x1, y1, x2, y2 = box.xyxy[0]
+                x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+                
+                # 获取分类和置信度
+                cls = int(box.cls[0])
+                conf = float(box.conf[0])
+                
+                # 绘制边界框
+                cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                
+                # 添加标签文本
+                label = f'{self.class_names[cls]} {conf:.2f}'
+                cv2.putText(img, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        
+        return img
 
-# 加载数据集
-DATA_DIR = "D:\\datasets\\Garbage-Classification\\garbage-dataset"
-BATCH_SIZE = 32
-
-# 创建训练和验证数据集
-train_ds = tf.keras.utils.image_dataset_from_directory(
-  DATA_DIR,
-  validation_split=0.2,
-  subset="training",
-  seed=123,
-  batch_size=BATCH_SIZE)
-
-# print(train_ds)
-
-val_ds = tf.keras.utils.image_dataset_from_directory(
-  DATA_DIR,
-  validation_split=0.2,
-  subset="validation",
-  seed=123,
-  batch_size=BATCH_SIZE)
-
-# 打印数据集信息
-# print(val_ds)
-
-# 标准化数据处理
-normalization_layer = tf.keras.layers.Rescaling(1./255)
-# 应用标准化层到训练和验证数据集
-train_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))
-val_ds = val_ds.map(lambda x, y: (normalization_layer(x), y))
-
-# 构建模型
-def create_model():
-    model = tf.keras.Sequential([
-        # 构建一个垃圾分类的卷积神经网络
-        tf.keras.layers.Resizing(128, 128),  # 输入图片尺寸统一
-        tf.keras.layers.Conv2D(32, 3, activation='relu'),
-        tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Conv2D(64, 3, activation='relu'),
-        tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Conv2D(128, 3, activation='relu'),
-        tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(128, activation='relu'),
-        tf.keras.layers.Dense(10)  # 10个类别
-    ])
-    return model
-
-model = create_model()
-# 编译模型
-model.compile(
-    optimizer='adam',
-    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-    metrics=['accuracy']
-)
-
-# 训练模型
-EPOCHS = 10
-history = model.fit(
-    train_ds,
-    validation_data=val_ds,
-    epochs=EPOCHS
-)
+if __name__ == "__main__":
+    detector = GarbageDetector()
+    
+    # 训练模型
+    detector.train("data.yaml")
+    
+    # 预测单张图片
+    result_img = detector.predict("datasets\val\images\Appliance3.jpg")
+    
+    # 显示结果
+    cv2.imshow("Prediction", result_img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()

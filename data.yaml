@@ -1,0 +1,13 @@
+train: datasets/train/images
+val: datasets/val/images
+
+nc: 40  # 类别数，按你的实际类别数填写
+names: [Paper, Cardboard, Class, Plastic, Metal, Zip-topcan, Glassbottles, Batteries, Fluorescentlighttubes, Paintsandsolvents, Chemicals, Medications, Foodscraps, Vegetablepeels, Fruitpeels, Coffeegrounds, Tealeaves, Planttrimmings, SoiledPlastic, TornTextiles, Ceramics, Cigarettebutts, Wood, Drywall, Bricks, Concrete, Furniture, Appliance, Mattresses, Computer, Mobilephones, Televisions, Blood-soakedgauze, Needles, MedicalWaste, OldCothes, Bedding, Oldbook, Foodbox, Plasticbag]
+
+# 在data.yaml中添加数据增强配置
+augment: false
+degrees: 15  # 旋转角度
+translate: 0.1  # 平移
+scale: 0.5  # 缩放
+fliplr: 0.5  # 水平翻转概率
+mosaic: 1.0  # mosaic增强

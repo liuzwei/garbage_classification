@@ -1,0 +1,49 @@
+| 序号 | 英文名                | 中文名     |
+| ---- | --------------------- | ---------- |
+| 0    | Paper                 | 纸张       |
+| 1    | Cardboard             | 纸板       |
+| 2    | Class                 | 类别       |
+| 3    | Plastic               | 塑料       |
+| 4    | Metal                 | 金属       |
+| 5    | Zip-topcan            | 易拉罐     |
+| 6    | Glassbottles          | 玻璃瓶     |
+| 7    | Batteries             | 电池       |
+| 8    | Fluorescentlighttubes | 荧光灯管   |
+| 9    | Paintsandsolvents     | 油漆和溶剂 |
+| 10   | Chemicals             | 化学品     |
+| 11   | Medications           | 药品       |
+| 12   | Foodscraps            | 食物残渣   |
+| 13   | Vegetablepeels        | 蔬菜皮     |
+| 14   | Fruitpeels            | 果皮       |
+| 15   | Coffeegrounds         | 咖啡渣     |
+| 16   | Tealeaves             | 茶叶       |
+| 17   | Planttrimmings        | 植物修剪物 |
+| 18   | SoiledPlastic         | 污染塑料   |
+| 19   | TornTextiles          | 破布       |
+| 20   | Ceramics              | 陶瓷       |
+| 21   | Cigarettebutts        | 烟头       |
+| 22   | Wood                  | 木头       |
+| 23   | Drywall               | 石膏板     |
+| 24   | Bricks                | 砖块       |
+| 25   | Concrete              | 混凝土     |
+| 26   | Furniture             | 家具       |
+| 27   | Appliance             | 家用电器   |
+| 28   | Mattresses            | 床垫       |
+| 29   | Computer              | 电脑       |
+| 30   | Mobilephones          | 手机       |
+| 31   | Televisions           | 电视机     |
+| 32   | Blood-soakedgauze     | 血浸纱布   |
+| 33   | Needles               | 针头       |
+| 34   | MedicalWaste          | 医疗垃圾   |
+| 35   | OldCothes             | 旧衣服     |
+| 36   | Bedding               | 床上用品   |
+| 37   | Oldbook               | 旧书       |
+| 38   | Foodbox               | 食品盒     |
+| 39   | Plasticbag            | 塑料袋     |
+
+
+
+yolo detect train data=data.yaml model=yolov8s.pt epochs=50 imgsz=640 batch=16
+
+
+yolo detect val model=runs/detect/train/weights/best.pt data=data.yaml
