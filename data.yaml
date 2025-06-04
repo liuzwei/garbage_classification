@@ -5,9 +5,18 @@ nc: 40  # 类别数，按你的实际类别数填写
 names: [Paper, Cardboard, Class, Plastic, Metal, Zip-topcan, Glassbottles, Batteries, Fluorescentlighttubes, Paintsandsolvents, Chemicals, Medications, Foodscraps, Vegetablepeels, Fruitpeels, Coffeegrounds, Tealeaves, Planttrimmings, SoiledPlastic, TornTextiles, Ceramics, Cigarettebutts, Wood, Drywall, Bricks, Concrete, Furniture, Appliance, Mattresses, Computer, Mobilephones, Televisions, Blood-soakedgauze, Needles, MedicalWaste, OldCothes, Bedding, Oldbook, Foodbox, Plasticbag]
 
 # 在data.yaml中添加数据增强配置
-augment: false
-degrees: 15  # 旋转角度
-translate: 0.1  # 平移
-scale: 0.5  # 缩放
-fliplr: 0.5  # 水平翻转概率
-mosaic: 1.0  # mosaic增强
+augment: true  # 启用数据增强
+#  通用增强
+mosaic: 1.0    # 100% 使用 Mosaic 增强（对小物体检测有帮助）
+mixup: 0.2     # MixUp 增强概率 20%（防止过拟合）
+degrees: 10    # 旋转角度范围 ±10°
+translate: 0.1  # 平移 ±10%
+fliplr: 0.5    # 水平翻转概率 50%
+hsv_h: 0.015   # 色调增强（Hue）
+hsv_s: 0.7     # 饱和度增强（Saturation）
+hsv_v: 0.4     # 亮度增强（Value）
+
+# 小物体优化
+# scale: 0.8     # 缩放范围 0.5~1.5
+# copy_paste: 0.1 # 复制粘贴增强（适用于小物体，但可能增加噪声）
+# small_object_scale: 1.5

@@ -40,10 +40,3 @@
 | 37   | Oldbook               | 旧书       |
 | 38   | Foodbox               | 食品盒     |
 | 39   | Plasticbag            | 塑料袋     |
-
-
-
-yolo detect train data=data.yaml model=yolov8s.pt epochs=50 imgsz=640 batch=16
-
-
-yolo detect val model=runs/detect/train/weights/best.pt data=data.yaml
