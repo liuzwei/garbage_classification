@@ -103,5 +103,8 @@ if __name__ == "__main__":
         "datasets/val/images/Ceramics45.jpg",
         "datasets/val/images/Cigarettebutts10.jpg",
         "datasets/val/images/Computer19.jpg",
+        "datasets/val/images/Cardboard3.jpg",
+        "datasets/val/images/Vegetablepeels19.jpg",
+        "datasets/val/images/Tealeaves11.jpg",
         "datasets/val/images/Fluorescentlighttubes6.jpeg",
     ])
